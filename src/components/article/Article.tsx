@@ -3,15 +3,10 @@ import plane from 'src/images/plane.png';
 import { Text } from 'src/ui/text';
 
 import styles from './Article.module.scss';
-import { OnClick } from 'src/ui/arrow-button/ArrowButton';
 
-type PropsArticle = {
-	onClick?: OnClick;
-};
-
-export const Article = (props: PropsArticle) => {
+export const Article = () => {
 	return (
-		<article onClick={props.onClick} className={clsx(styles.article)}>
+		<article className={clsx(styles.article)}>
 			<Text as='h1' size={45} weight={800} uppercase dynamicLite>
 				Портрет Западной Швейцарии
 			</Text>

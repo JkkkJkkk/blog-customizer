@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { CSSProperties, useState, useCallback } from 'react';
+import { CSSProperties, useState } from 'react';
 import clsx from 'clsx';
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
@@ -14,14 +14,8 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const [articleState, setArticleState] = useState(defaultArticleState);
-	const [isFormOpen, setIsFormOpen] = useState(false);
-
-	const toggleForm = () => setIsFormOpen((prev) => !prev);
-
-	const handleSubmit = useCallback((newState: ArticleStateType) => {
-		setArticleState(newState);
-	}, []);
+	const [articleState, setArticleState] =
+		useState<ArticleStateType>(defaultArticleState);
 
 	return (
 		<div
@@ -35,7 +29,7 @@ const App = () => {
 					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm onSubmit={handleSubmit} onToggle={toggleForm} />
+			<ArticleParamsForm onSubmit={setArticleState} />
 			<Article />
 		</div>
 	);

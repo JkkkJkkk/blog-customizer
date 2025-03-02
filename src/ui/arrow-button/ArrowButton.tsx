@@ -4,12 +4,12 @@ import clsx from 'clsx';
 
 export type OnClick = () => void;
 
-export type PropsArrowButton = {
+export type ArrowButtonProps = {
 	onClick?: OnClick;
 	isOpen: boolean;
 };
 
-export const ArrowButton = ({ onClick, isOpen }: PropsArrowButton) => {
+export const ArrowButton = ({ isOpen, onClick }: ArrowButtonProps) => {
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		if (event.key === 'Enter' || event.key === ' ') {
 			onClick?.();

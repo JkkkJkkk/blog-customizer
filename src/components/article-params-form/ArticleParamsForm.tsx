@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 import { ArrowButton } from 'src/ui/arrow-button';
@@ -20,30 +20,14 @@ import { RadioGroup } from 'src/ui/radio-group';
 
 type PropsArticleParamsForm = {
 	onSubmit?: (params: ArticleStateType) => void;
-	onToggle?: () => void;
 };
 
-export const ArticleParamsForm = ({
-	onSubmit
-}: PropsArticleParamsForm) => {
+export const ArticleParamsForm = ({ onSubmit }: PropsArticleParamsForm) => {
 	const [articleParams, setArticleParams] = useState(defaultArticleState);
-	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false); // 👈 Локальное управление открытием формы
+	const formRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (!isFormOpen) return;
-
-		const handlerOpenWidget = (event: KeyboardEvent) => {
-			if (event.key === 'Escape') {
-				setIsFormOpen(false);
-			}
-		};
-
-		document.addEventListener('keydown', handlerOpenWidget);
-
-		return () => {
-			document.removeEventListener('keydown', handlerOpenWidget);
-		};
-	}, [isFormOpen]);
+	const toggleForm = () => setIsOpen((prev) => !prev); // 👈 Функция переключения формы
 
 	const handleChange = useCallback(
 		(key: keyof ArticleStateType) => (option: OptionType) => {
@@ -61,16 +45,36 @@ export const ArticleParamsForm = ({
 		setArticleParams(defaultArticleState);
 	};
 
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				toggleForm();
+			}
+		};
+
+		const handleClickOutside = (event: MouseEvent) => {
+			if (formRef.current && !formRef.current.contains(event.target as Node)) {
+				toggleForm();
+			}
+		};
+
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen]);
+
 	return (
 		<>
-			<ArrowButton
-				onClick={() => setIsFormOpen((prev) => !prev)}
-				isOpen={isFormOpen}
-			/>
+			<ArrowButton onClick={toggleForm} isOpen={isOpen} />
 			<aside
-				className={clsx(styles.container, {
-					[styles.container_open]: isFormOpen,
-				})}>
+				className={clsx(styles.container, { [styles.container_open]: isOpen })}
+				ref={formRef}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
