@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState } from 'react';
+import { CSSProperties, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
@@ -14,40 +14,31 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const [formState, setFormState] = useState(defaultArticleState);
-	const [formOpen, setFormOpen] = useState(false);
+	const [articleState, setArticleState] = useState(defaultArticleState);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 
-	const toggler = () => setFormOpen(!formOpen);
+	const toggleForm = () => setIsFormOpen((prev) => !prev);
 
-	const cbSubmit = (props: ArticleStateType) => setFormState(props);
-
-	const cbReset = (props: ArticleStateType) => setFormState(props);
+	const handleSubmit = useCallback((newState: ArticleStateType) => {
+		setArticleState(newState);
+	}, []);
 
 	return (
 		<div
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': formState.fontFamilyOption.value,
-					'--font-size': formState.fontSizeOption.value,
-					'--font-color': formState.fontColor.value,
-					'--container-width': formState.contentWidth.value,
-					'--bg-color': formState.backgroundColor.value,
+					'--font-family': articleState.fontFamilyOption.value,
+					'--font-size': articleState.fontSizeOption.value,
+					'--font-color': articleState.fontColor.value,
+					'--container-width': articleState.contentWidth.value,
+					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm
-				onSubmit={cbSubmit}
-				onReset={cbReset}
-				onToggle={toggler}
-				formOp={formOpen}
-			/>
-			<Article onClick={() => setFormOpen(false)} />
+			<ArticleParamsForm onSubmit={handleSubmit} onToggle={toggleForm} />
+			<Article />
 		</div>
 	);
 };
 
-root.render(
-	<StrictMode>
-		<App />
-	</StrictMode>
-);
+root.render(<App />);
