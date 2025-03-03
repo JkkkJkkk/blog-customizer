@@ -4,6 +4,7 @@
 	width: 616px;
 	height: 100%;
 	overflow: scroll;
+	overflow-x: hidden;
 	transform: translate(-616px);
 	transition: transform 0.5s ease;
 }
@@ -14,8 +15,8 @@
 
 .form {
 	display: grid;
+	align-content: start;
 	grid-gap: 50px;
-	flex-shrink: 0;
 	box-sizing: border-box;
 	width: 616px;
 	min-height: 100%;
@@ -27,5 +28,5 @@
 .bottomContainer {
 	display: flex;
 	justify-content: space-between;
-	margin-top: auto;
+	margin-top: 157px;
 }

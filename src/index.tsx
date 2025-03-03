@@ -29,7 +29,7 @@ const App = () => {
 					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm onSubmit={setArticleState} />
+			<ArticleParamsForm setArticleState={setArticleState} />
 			<Article />
 		</div>
 	);

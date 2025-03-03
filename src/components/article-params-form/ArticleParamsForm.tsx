@@ -19,30 +19,33 @@ import {
 import { RadioGroup } from 'src/ui/radio-group';
 
 type PropsArticleParamsForm = {
-	onSubmit?: (params: ArticleStateType) => void;
+	setArticleState: React.Dispatch<React.SetStateAction<ArticleStateType>>;
 };
 
-export const ArticleParamsForm = ({ onSubmit }: PropsArticleParamsForm) => {
-	const [articleParams, setArticleParams] = useState(defaultArticleState);
-	const [isOpen, setIsOpen] = useState(false); // 👈 Локальное управление открытием формы
+export const ArticleParamsForm = ({
+	setArticleState,
+}: PropsArticleParamsForm) => {
+	const [formState, setFormState] = useState(defaultArticleState);
+	const [isOpen, setIsOpen] = useState(false);
 	const formRef = useRef<HTMLDivElement>(null);
 
-	const toggleForm = () => setIsOpen((prev) => !prev); // 👈 Функция переключения формы
+	const toggleForm = () => setIsOpen((prev) => !prev);
 
 	const handleChange = useCallback(
 		(key: keyof ArticleStateType) => (option: OptionType) => {
-			setArticleParams((prev) => ({ ...prev, [key]: option }));
+			setFormState((prev) => ({ ...prev, [key]: option }));
 		},
 		[]
 	);
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		onSubmit?.(articleParams);
+		setArticleState(formState);
 	};
 
 	const handleReset = () => {
-		setArticleParams(defaultArticleState);
+		setFormState(defaultArticleState);
+		setArticleState(defaultArticleState);
 	};
 
 	useEffect(() => {
@@ -84,35 +87,35 @@ export const ArticleParamsForm = ({ onSubmit }: PropsArticleParamsForm) => {
 					</Text>
 					<Select
 						onChange={handleChange('fontFamilyOption')}
-						selected={articleParams.fontFamilyOption}
+						selected={formState.fontFamilyOption}
 						title='Шрифт'
 						options={fontFamilyOptions}
 					/>
+					<RadioGroup
+						name={formState.fontSizeOption.className}
+						options={fontSizeOptions}
+						selected={formState.fontSizeOption}
+						onChange={handleChange('fontSizeOption')}
+						title='Размер шрифта'
+					/>
 					<Select
 						onChange={handleChange('fontColor')}
-						selected={articleParams.fontColor}
+						selected={formState.fontColor}
 						title='Цвет шрифта'
 						options={fontColors}
 					/>
 					<Separator />
 					<Select
 						onChange={handleChange('backgroundColor')}
-						selected={articleParams.backgroundColor}
+						selected={formState.backgroundColor}
 						title='Цвет фона'
 						options={backgroundColors}
 					/>
 					<Select
 						onChange={handleChange('contentWidth')}
-						selected={articleParams.contentWidth}
+						selected={formState.contentWidth}
 						title='Ширина контента'
 						options={contentWidthArr}
-					/>
-					<RadioGroup
-						name={articleParams.fontSizeOption.className}
-						options={fontSizeOptions}
-						selected={articleParams.fontSizeOption}
-						onChange={handleChange('fontSizeOption')}
-						title='Размер шрифта'
 					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='clear' htmlType='reset' />
