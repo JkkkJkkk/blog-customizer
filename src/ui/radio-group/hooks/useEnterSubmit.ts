@@ -8,7 +8,6 @@ type UseEnterSubmit = {
 
 export const useEnterSubmit = ({ onChange, option }: UseEnterSubmit) => {
 	const optionRef = useRef<HTMLDivElement>(null);
-
 	useEffect(() => {
 		const optionHtml = optionRef.current;
 
@@ -22,7 +21,6 @@ export const useEnterSubmit = ({ onChange, option }: UseEnterSubmit) => {
 
 		optionHtml.addEventListener('keydown', handleEnterKeyDown);
 
-		// не забываем удалять листенеры, при размонтировании компонента
 		return () => {
 			optionHtml.removeEventListener('keydown', handleEnterKeyDown);
 		};
